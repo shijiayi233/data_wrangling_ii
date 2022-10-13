@@ -147,3 +147,16 @@ poke =
   content() # 通常先写“parsed”看看能不能guess，使之更好读
 ```
 
+
+## Alzheimer's Disease and Healthy Aging Data
+
+```{r}
+url = "https://chronicdata.cdc.gov/resource/hfr9-rurv.csv"
+
+alz_html = 
+  GET(url,
+      query = list("$limit" = 5000)) %>%
+  content("parsed")
+
+```
+

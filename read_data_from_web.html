@@ -512,6 +512,24 @@ iterating over chunks of a few thousand rows.</p>
   GET(&quot;http://pokeapi.co/api/v2/pokemon/1&quot;) %&gt;%
   content() # 通常先写“parsed”看看能不能guess，使之更好读</code></pre>
 </div>
+<div id="alzheimers-disease-and-healthy-aging-data" class="section level2">
+<h2>Alzheimer’s Disease and Healthy Aging Data</h2>
+<pre class="r"><code>url = &quot;https://chronicdata.cdc.gov/resource/hfr9-rurv.csv&quot;
+
+alz_html = 
+  GET(url,
+      query = list(&quot;$limit&quot; = 5000)) %&gt;%
+  content(&quot;parsed&quot;)</code></pre>
+<pre><code>## Rows: 5000 Columns: 39
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (24): locationabbr, locationdesc, datasource, class, topic, question, da...
+## dbl  (6): yearstart, yearend, data_value, data_value_alt, low_confidence_lim...
+## lgl  (9): rowid, response, sample_size, stratificationcategory3, stratificat...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
 
 
 
