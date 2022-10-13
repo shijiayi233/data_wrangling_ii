@@ -1,0 +1,149 @@
+---
+title: "read_data_from_web"
+author: "Jiayi Shi"
+date: "2022-10-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(rvest)
+library(httr)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+## NSDUH data
+
+```{r}
+url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+drug_use_html = read_html(url)
+
+drug_use_html
+```
+
+
+```{r}
+drug_use_html %>%
+  html_table() %>% # get all the tables from the website
+  first() %>% 
+  slice(-1) # get rid off the first row
+```
+
+### Assessment
+
+```{r}
+cost_living_html = read_html("https://www.bestplaces.net/cost_of_living/city/new_york/new_york") %>% 
+  html_table(header = T) %>% # First row be header
+  first()
+```
+
+
+## StarWars data
+
+```{r}
+swm_html = 
+  read_html("https://www.imdb.com/list/ls070150896/")
+```
+
+### Get the staff I want
+
+```{r}
+title_vec = 
+  swm_html %>%
+  html_elements(".lister-item-header a") %>%
+  html_text()
+
+gross_rev_vec = 
+  swm_html %>%
+  html_elements(".text-small:nth-child(7) span:nth-child(5)") %>%
+  html_text()
+
+runtime_vec = 
+  swm_html %>%
+  html_elements(".runtime") %>%
+  html_text()
+
+swm_df = 
+  tibble(
+    title = title_vec,
+    rev = gross_rev_vec,
+    runtime = runtime_vec)
+```
+
+### Amazon reviews
+
+```{r}
+url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+nd_html = read_html(url)
+
+review_titles = nd_html %>% 
+  html_elements(".a-text-bold span") %>% 
+  html_text()
+
+review_stars = nd_html %>% 
+  html_elements("#cm_cr-review_list .review-rating") %>% 
+  html_text()
+
+review_text = nd_html %>% 
+  html_elements(".review-text-content span") %>% 
+  html_text()
+
+review_df = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+
+review_df
+```
+
+
+## APIs
+
+CSV file:  
+```{r}
+water_df = 
+  GET("https://data.cityofnewyork.us/resource/ia2d-e54m.csv") %>%  # OpenDate dataset API CSV (JSON difficult to operate)
+  content("parsed")
+```
+
+JSON file:  
+```{r}
+nyc_water = 
+  GET("https://data.cityofnewyork.us/resource/ia2d-e54m.json") %>% 
+  content("text") %>%
+  jsonlite::fromJSON() %>%
+  as_tibble()
+```
+
+By default, the CDC API limits data to the first 1000 rows. Here I’ve increased that by changing an element of the API query – I looked around the website describing the API to find the name of the argument, and then used the appropriate syntax for GET. To get the full data, I could increase this so that I get all the data at once or I could try iterating over chunks of a few thousand rows.
+```{r}
+brfss_smart2010 = 
+  GET("https://chronicdata.cdc.gov/resource/acme-vg9e.csv",
+      query = list("$limit" = 5000)) %>% 
+  content("parsed")
+```
+
+
+```{r}
+poke = 
+  GET("http://pokeapi.co/api/v2/pokemon/1") %>%
+  content() # 通常先写“parsed”看看能不能guess，使之更好读
+```
+
