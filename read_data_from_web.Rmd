@@ -2,7 +2,7 @@
 title: "read_data_from_web"
 author: "Jiayi Shi"
 date: "2022-10-13"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
