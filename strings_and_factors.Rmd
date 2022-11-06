@@ -132,7 +132,7 @@ as.numeric(vec_sex)
 ## NSDUH
 
 ```{r}
-nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.html"
 
 table_marj = 
   read_html(nsduh_url) %>% 

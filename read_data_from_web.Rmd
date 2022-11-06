@@ -8,7 +8,7 @@ output: github_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(rvest)
-library(httr)
+library(httr) #GET(API)
 
 knitr::opts_chunk$set(
   fig.width = 6,
